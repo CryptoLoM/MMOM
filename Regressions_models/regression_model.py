@@ -23,33 +23,63 @@ def preprocess_data(df):
     df.reset_index(inplace=True)
     return df
 
+# Додаємо новий стовпець для розподілу на часові інтервали
+def add_time_of_day(df):
+    def get_time_of_day(hour):
+        if 6 <= hour < 12:
+            return 'morning'
+        elif 12 <= hour < 18:
+            return 'afternoon'
+        elif 18 <= hour < 24:
+            return 'evening'
+        else:
+            return 'night'
 
+    df['time_of_day'] = df['logged_at'].dt.hour.apply(get_time_of_day)
+    return df
+
+# Аналіз концентрації забрудників протягом доби
+def analyze_by_time_of_day(df):
+    # Групуємо дані за періодом дня та обчислюємо середнє значення для кожного забрудника
+    time_of_day_avg = df.groupby('time_of_day')[['pm10', 'pm25']].mean()
+
+    # Створюємо графік для візуалізації
+    time_of_day_avg.plot(kind='bar', figsize=(10, 6), colormap='coolwarm')
+    plt.title('Середня концентрація PM10 та PM2,5 за часом доби:')
+    plt.ylabel('Концетрація(µg/m³):')
+    plt.xlabel('Time of Day')
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+# Кореляційна матриця
 def correlation_matrix(df):
+    numeric_df = df.select_dtypes(include=[float, int])
     plt.figure(figsize=(16, 6))
-    heatmap = sns.heatmap(df.corr(method='pearson'), annot=True, cbar=False, cmap='coolwarm')
+    heatmap = sns.heatmap(numeric_df.corr(method='pearson'), annot=True, cbar=False, cmap='coolwarm')
     heatmap.set_xlabel('')
     heatmap.set_ylabel('')
     plt.title('Correlation Matrix')
     plt.show()
 
+
+# Графіки розсіювання
 def scatter_plots(df):
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))  # 1 рядок та 2 стовпці підплотів
-
-    # Перевірка, чи є відповідні стовпці у DataFrame перед створенням графіків
     if 'temperature' in df.columns and 'humidity' in df.columns:
-        sns.scatterplot(x='temperature', y='humidity', data=df, s=1, ax=axes[0])
-        axes[0].set_title('Temperature vs Humidity')
+        sns.scatterplot(x='temperature', y='humidity', data=df, s=1, ax=axes[1])
+        axes[1].set_title('Temperature vs Humidity')
 
     if 'pm10' in df.columns and 'pm25' in df.columns:
-        sns.scatterplot(x='pm10', y='pm25', data=df, s=1, ax=axes[1])
-        axes[1].set_ylim(0, 100)
-        axes[1].set_title('PM10 vs PM25')
+        sns.scatterplot(x='pm10', y='pm25', data=df, s=1, ax=axes[0])
+        axes[0].set_ylim(0, 100)
+        axes[0].set_xlim(0, 150)
+        axes[0].set_title('PM10 vs PM25')
 
     plt.tight_layout()
     plt.show()
 
-
-
+# Аналіз залежностей PM10 і PM2.5
 def analyze_pm(df):
     pm_df = df[["logged_at", "pm10", "pm25"]].dropna()  # Дропає NaN значення
 
@@ -79,6 +109,7 @@ def analyze_pm(df):
     print("R2 score for PM10/PM25: {:.2f}".format(r2_score(pm_10_25_test, pm_10_25_predicted)))
     print("RMSE score for PM10/PM25: {:.2f}".format(mean_squared_error(pm_10_25_test, pm_10_25_predicted, squared=False)))
 
+# Основна функція
 def main():
     file_path = 'saveecobot_23976.csv'
     df = load_data(file_path)
@@ -87,6 +118,13 @@ def main():
 
     print(df.head(15))
 
+    # Додаємо новий стовпець з часовими інтервалами
+    df = add_time_of_day(df)
+
+    # Аналіз зміни забрудників протягом доби
+    analyze_by_time_of_day(df)
+
+    # Аналіз залежностей
     correlation_matrix(df)
     scatter_plots(df)
     analyze_pm(df)
