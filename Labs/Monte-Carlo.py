@@ -10,7 +10,7 @@ def is_inside_figure(x, y):
     return False
 
 
-def monte_carlo(N=10000):
+def monte_carlo(N=3000):
     x_random = np.random.uniform(0, 4, N)  # Генеруємо випадкові точки в межах прямокутника (0, 4) для x
     y_random = np.random.uniform(0, 4, N)  # Генеруємо випадкові точки в межах прямокутника (0, 4) для y
     rectangle_area = 4 * 4  # Площа прямокутника
@@ -24,8 +24,24 @@ def monte_carlo(N=10000):
     return figure_area
 
 
-N = 1000
+N = 2500
 calculated_area = monte_carlo(N)
+# Обчислення площі фігури
+width_large = 4
+height_large = 3
+width_small = 2
+height_small = 1
+
+# Площа великого прямокутника
+area_large = width_large * height_large
+
+# Площа білого прямокутника
+area_small = width_small * height_small
+
+# Загальна площа фігури
+area_figure = area_large - 2 * area_small
+print(f"Площа фігури: {area_figure}")
+
 print(f"Обчислена площа фігури методом Монте-Карло: {calculated_area:.4f}")
 
 # Візуалізація
@@ -34,7 +50,7 @@ y = np.linspace(0, 4, 100)
 X, Y = np.meshgrid(x, y)
 Z = np.vectorize(is_inside_figure)(X, Y)
 
-plt.figure(figsize=(6, 6))
+plt.figure(figsize=(8, 8))
 plt.imshow(Z, extent=(0, 4, 0, 4), origin='lower', cmap='Blues', alpha=0.6)
 plt.title("Фігура для обчислення площі")
 plt.xlabel("x")
