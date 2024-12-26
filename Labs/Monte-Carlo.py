@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def is_inside_figure(x, y):
     # Визначення, чи знаходиться точка всередині фігури
-    if (2 <= x <= 4 and 0 <= y <= 2) or (0 <= x <= 2 and 1 <= y <= 3):
+    if (4 >= x >= 2 >= y >= 0) or (0 <= x <= 2 and 1 <= y <= 3):
         if not (0 <= x <= 2 and 0 <= y <= 1) or (2 <= x <= 4 and 2 <= y <= 3):
             return True
     return False
