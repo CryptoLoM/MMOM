@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 
 def is_inside_figure(x, y):
-    # Визначення, чи знаходиться точка всередині фігури
     if (4 >= x >= 2 >= y >= 0) or (0 <= x <= 2 and 1 <= y <= 3):
         if not (0 <= x <= 2 and 0 <= y <= 1) or (2 <= x <= 4 and 2 <= y <= 3):
             return True
@@ -11,9 +10,9 @@ def is_inside_figure(x, y):
 
 
 def monte_carlo(N=3000):
-    x_random = np.random.uniform(0, 4, N)  # Генеруємо випадкові точки в межах прямокутника (0, 4) для x
-    y_random = np.random.uniform(0, 4, N)  # Генеруємо випадкові точки в межах прямокутника (0, 4) для y
-    rectangle_area = 4 * 4  # Площа прямокутника
+    x_random = np.random.uniform(0, 4, N)  
+    y_random = np.random.uniform(0, 4, N)  
+    rectangle_area = 4 * 4 
     inside_count = 0
 
     for x, y in zip(x_random, y_random):
