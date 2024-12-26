@@ -80,7 +80,6 @@ t_future = np.arange(future_days)
 
 sirf_albania_future = odeint(sirf_model, initial_conditions_albania, t_future, args=tuple(params_albania))
 
-# 7. Візуалізація результатів
 plt.figure(figsize=(14, 8))
 
 # Інфіковані
