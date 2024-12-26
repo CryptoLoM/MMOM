@@ -5,7 +5,7 @@ from scipy.integrate import odeint
 from scipy.optimize import curve_fit
 from IPython.display import display
 
-# 1. Завантаження даних
+
 url = 'https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/jhu/full_data.csv'
 data = pd.read_csv(url)
 
